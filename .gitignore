@@ -1,0 +1,25 @@
+# Ignore all PNG images
+*.png
+*.PNG
+
+# Ignore input/output contents but keep directory structure
+RemoveWatermarkTool/input/*
+!RemoveWatermarkTool/input/.gitkeep
+RemoveWatermarkTool/output/*
+!RemoveWatermarkTool/output/.gitkeep
+
+ResizeAndLocalTool/input/*
+!ResizeAndLocalTool/input/.gitkeep
+ResizeAndLocalTool/output/*
+!ResizeAndLocalTool/output/.gitkeep
+ResizeAndLocalTool/reference/*
+!ResizeAndLocalTool/reference/.gitkeep
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
