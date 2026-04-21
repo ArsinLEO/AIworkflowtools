@@ -9,6 +9,7 @@
 """
 
 import os
+import re
 import math
 from PIL import Image
 
@@ -18,11 +19,18 @@ OUTPUT_DIR = "output"
 COLS = 4  # 每行帧数
 
 
+def _natural_sort_key(s: str) -> list:
+    """自然排序键：将字符串按文本和数字分段，数字按数值排序。"""
+    return [int(text) if text.isdigit() else text.lower()
+            for text in re.split(r"([0-9]+)", s)]
+
+
 def get_png_files(folder: str) -> list[str]:
-    """返回文件夹中所有PNG文件（按字母排序）。"""
+    """返回文件夹中所有PNG文件（按自然排序）。"""
     if not os.path.isdir(folder):
         return []
-    return sorted([f for f in os.listdir(folder) if f.lower().endswith(".png")])
+    files = [f for f in os.listdir(folder) if f.lower().endswith(".png")]
+    return sorted(files, key=_natural_sort_key)
 
 
 def generate_spritesheet(input_dir: str, output_dir: str, name: str = "spritesheet") -> None:
