@@ -16,7 +16,8 @@ from PIL import Image
 
 INPUT_DIR = "input"
 OUTPUT_DIR = "output"
-COLS = 4  # 每行帧数
+COLS = 4  # 每行帧数（偏好值，脚本会自动调整以适配纹理限制）
+MAX_TEXTURE_SIZE = 8192  # GPU 纹理尺寸上限（PC 通常 8192，高端卡 16384）
 
 
 def _natural_sort_key(s: str) -> list:
@@ -52,10 +53,27 @@ def generate_spritesheet(input_dir: str, output_dir: str, name: str = "spriteshe
     cell_w = max(img.width for img in frames)
     cell_h = max(img.height for img in frames)
 
-    # 计算行列
+    # 自动计算列数，确保整张图不超过 GPU 纹理限制
     total = len(frames)
-    cols = COLS
-    rows = math.ceil(total / cols)
+    max_cols = max(1, MAX_TEXTURE_SIZE // cell_w)
+    max_rows = max(1, MAX_TEXTURE_SIZE // cell_h)
+
+    if cell_w > MAX_TEXTURE_SIZE or cell_h > MAX_TEXTURE_SIZE:
+        print(f"错误: 单帧尺寸 {cell_w}x{cell_h} 超过纹理上限 {MAX_TEXTURE_SIZE}，无法生成图集")
+        return
+
+    cols = min(COLS, max_cols)
+    while cols <= max_cols:
+        rows = math.ceil(total / cols)
+        if rows <= max_rows:
+            break
+        cols += 1
+    else:
+        print(f"错误: 即使最大列数 {max_cols} 也无法容纳 {total} 帧（单帧 {cell_w}x{cell_h}）")
+        return
+
+    if cols != COLS:
+        print(f"  自动调整列数: {COLS} -> {cols}（适配纹理限制 {MAX_TEXTURE_SIZE}）")
 
     # 创建大图（透明背景）
     sheet_w = cols * cell_w
