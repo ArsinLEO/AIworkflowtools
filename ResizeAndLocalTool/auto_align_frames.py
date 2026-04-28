@@ -18,6 +18,7 @@
 
 import json
 import os
+import re
 import sys
 from collections import deque
 from pathlib import Path
@@ -29,7 +30,6 @@ REF_DIR = "reference"
 INPUT_DIR = "input"
 OUTPUT_DIR = "output"
 PARAMS_FILE = "align_params.json"
-TARGET_SIZE = 640
 
 # ============ 核心函数 ============
 
@@ -44,8 +44,10 @@ def find_single_reference_image(folder: str) -> str:
 
 
 def find_all_png_files(folder: str) -> list[str]:
-    """返回文件夹中所有PNG文件（按字母排序）。"""
-    return sorted([f for f in os.listdir(folder) if f.lower().endswith(".png")])
+    """返回文件夹中所有PNG文件（按自然排序：1 < 2 < 10 < 11）。"""
+    files = [f for f in os.listdir(folder) if f.lower().endswith(".png")]
+    files.sort(key=lambda s: [int(t) if t.isdigit() else t.lower() for t in re.split(r"([0-9]+)", s)])
+    return files
 
 
 def detect_main_component_bounds(img_path: str, alpha_threshold: int = 10) -> tuple | None:
@@ -131,25 +133,6 @@ def align_frame(src_path: str, dst_path: str, canvas_size: tuple, scale: float, 
     canvas.save(dst_path)
 
 
-def square_and_resize(src_path: str, dst_path: str, target_size: int) -> None:
-    """
-    将图像扩展为正方形（居中，不拉伸），然后缩放到 target_size。
-    扩展方向自动判断：宽图扩展高度，高图扩展宽度。
-    """
-    img = Image.open(src_path).convert("RGBA")
-    w, h = img.size
-    max_dim = max(w, h)
-
-    square = Image.new("RGBA", (max_dim, max_dim), (0, 0, 0, 0))
-    paste_x = (max_dim - w) // 2
-    paste_y = (max_dim - h) // 2
-    square.paste(img, (paste_x, paste_y), img)
-
-    resized = square.resize((target_size, target_size), Image.LANCZOS)
-    os.makedirs(os.path.dirname(dst_path), exist_ok=True)
-    resized.save(dst_path)
-
-
 def run_phase1() -> dict:
     """第一阶段：检测参考图，计算每个输入文件夹的对齐参数。"""
     # 1. 读取参考图
@@ -225,7 +208,7 @@ def run_phase1() -> dict:
 
 
 def run_phase2() -> None:
-    """第二阶段：应用对齐参数到所有帧，扩展为正方形，缩放到640x640，重命名。"""
+    """第二阶段：应用对齐参数到所有帧，重命名为 0.png, 1.png, ..."""
     if not os.path.exists(PARAMS_FILE):
         print(f"错误: 参数文件不存在: {PARAMS_FILE}")
         print("请先运行第一阶段（不带 --apply 参数）")
@@ -247,39 +230,20 @@ def run_phase2() -> None:
         offset_x = cfg["offset_x"]
         offset_y = cfg["offset_y"]
 
-        # 临时对齐输出
-        temp_dir = os.path.join(OUTPUT_DIR, "_temp", sub_name)
         final_dir = os.path.join(OUTPUT_DIR, sub_name)
-        os.makedirs(temp_dir, exist_ok=True)
         os.makedirs(final_dir, exist_ok=True)
 
         print(f"\n处理 [{sub_name}] ({len(files)} 帧)...")
 
-        # 步骤A: 对齐所有帧到参考画布
         for i, fname in enumerate(files):
             src = os.path.join(sub_path, fname)
-            dst = os.path.join(temp_dir, fname)
+            dst = os.path.join(final_dir, f"{i}.png")
             align_frame(src, dst, (canvas_w, canvas_h), scale, offset_x, offset_y)
             if (i + 1) % 20 == 0 or i + 1 == len(files):
-                print(f"  对齐 {i + 1}/{len(files)}")
+                print(f"  处理 {i + 1}/{len(files)}")
 
-        # 步骤B: 扩展为正方形 + 缩放到640x640 + 重命名
-        aligned_files = find_all_png_files(temp_dir)
-        for i, fname in enumerate(aligned_files):
-            src = os.path.join(temp_dir, fname)
-            dst = os.path.join(final_dir, f"{i}.png")
-            square_and_resize(src, dst, TARGET_SIZE)
-            if (i + 1) % 20 == 0 or i + 1 == len(aligned_files):
-                print(f"  最终处理 {i + 1}/{len(aligned_files)}")
-
-    # 清理临时文件
-    import shutil
-    temp_root = os.path.join(OUTPUT_DIR, "_temp")
-    if os.path.exists(temp_root):
-        shutil.rmtree(temp_root)
-        print("\n已清理临时文件")
-
-    print(f"\n全部完成！最终输出目录: {OUTPUT_DIR}/")
+    print(f"\n全部完成！输出画布: {canvas_w}x{canvas_h}")
+    print(f"最终输出目录: {OUTPUT_DIR}/")
 
 
 def main() -> None:

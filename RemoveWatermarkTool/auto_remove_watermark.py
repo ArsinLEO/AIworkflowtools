@@ -37,7 +37,7 @@ CORNER_H = 0.35   # 上下两侧检测高度占画面35%
 MIN_WATERMARK_SIZE = 20
 MAX_WATERMARK_SIZE = 5000
 MAX_COMPONENT_DENSITY = 0.85   # 放宽：文字笔画可能较密
-MIN_ASPECT_RATIO = 2.0   # 宽/高 >= 2，横向文字特征
+MIN_ASPECT_RATIO = 1.0   # 宽/高 >= 1，兼容方形logo水印
 
 # 删除安全阀：超过画面比例则放弃删除（避免误删人物）
 MAX_DELETE_RATIO = 0.20   # 放宽到20%：分位区间覆盖多帧偏移后面积较大

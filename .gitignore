@@ -15,6 +15,19 @@ ResizeAndLocalTool/output/*
 ResizeAndLocalTool/reference/*
 !ResizeAndLocalTool/reference/.gitkeep
 
+SpriteSheetTool/input/*
+!SpriteSheetTool/input/.gitkeep
+SpriteSheetTool/output/*
+!SpriteSheetTool/output/.gitkeep
+
+SpriteSheetSplitterTool/input/*
+!SpriteSheetSplitterTool/input/.gitkeep
+SpriteSheetSplitterTool/output/*
+!SpriteSheetSplitterTool/output/.gitkeep
+
+# Runtime generated files
+align_params.json
+
 # Python cache
 __pycache__/
 *.pyc
