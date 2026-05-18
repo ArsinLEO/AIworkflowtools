@@ -25,6 +25,12 @@ SpriteSheetSplitterTool/input/*
 SpriteSheetSplitterTool/output/*
 !SpriteSheetSplitterTool/output/.gitkeep
 
+VideoToSpriteSheetTool/input/*
+!VideoToSpriteSheetTool/input/.gitkeep
+VideoToSpriteSheetTool/output/*
+!VideoToSpriteSheetTool/output/.gitkeep
+VideoToSpriteSheetTool/frames/
+
 # Runtime generated files
 align_params.json
 
