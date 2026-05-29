@@ -31,6 +31,16 @@ VideoToSpriteSheetTool/output/*
 !VideoToSpriteSheetTool/output/.gitkeep
 VideoToSpriteSheetTool/frames/
 
+GreenMagentaRemovalTool/input/*
+!GreenMagentaRemovalTool/input/.gitkeep
+GreenMagentaRemovalTool/output/*
+!GreenMagentaRemovalTool/output/.gitkeep
+
+ShadowRemovalTool/input/*
+!ShadowRemovalTool/input/.gitkeep
+ShadowRemovalTool/output/*
+!ShadowRemovalTool/output/.gitkeep
+
 # Runtime generated files
 align_params.json
 
