@@ -49,6 +49,23 @@ __pycache__/
 *.pyc
 *.pyo
 
+GreenToBlackTool/input/*
+!GreenToBlackTool/input/.gitkeep
+GreenToBlackTool/output/*
+!GreenToBlackTool/output/.gitkeep
+
+BiRefNetTool/input/*
+!BiRefNetTool/input/.gitkeep
+BiRefNetTool/output/*
+!BiRefNetTool/output/.gitkeep
+
+# External dependency (clone separately)
+BiRefNet/
+
+# Temp folders
+新建文件夹/
+新建文件夹 (2)/
+
 # OS files
 .DS_Store
 Thumbs.db

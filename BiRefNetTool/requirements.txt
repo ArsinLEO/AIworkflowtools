@@ -1,0 +1,13 @@
+torch>=2.0.0
+torchvision
+numpy
+opencv-python
+timm
+scipy
+scikit-image
+kornia
+einops
+huggingface-hub
+accelerate
+pillow
+tqdm
