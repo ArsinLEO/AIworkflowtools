@@ -59,6 +59,21 @@ BiRefNetTool/input/*
 BiRefNetTool/output/*
 !BiRefNetTool/output/.gitkeep
 
+RealESRGANTool/input/*
+!RealESRGANTool/input/.gitkeep
+RealESRGANTool/output/*
+!RealESRGANTool/output/.gitkeep
+RealESRGANTool/weights/*
+RealESRGANTool/ncnn_bin/
+RealESRGANTool/*.zip
+
+LaMaInpaintTool/input/*
+!LaMaInpaintTool/input/.gitkeep
+LaMaInpaintTool/output/*
+!LaMaInpaintTool/output/.gitkeep
+LaMaInpaintTool/weights/*
+LaMaInpaintTool/__pycache__/
+
 # External dependency (clone separately)
 BiRefNet/
 
